@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:cxf="http://camel.apache.org/schema/cxf"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans     http://www.springframework.org/schema/beans/spring-beans.xsd     http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd     http://camel.apache.org/schema/spring     http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <cxf:cxfEndpoint address="http://localhost:8090/Address"
+        endpointName="s:AddressPort" id="processAddress"
+        serviceClass="com.training.esb.esb_adapter.AddressEndpoint"
+        serviceName="s:AddressService"
+        wsdlURL="classpath:wsdl/address.wsdl" xmlns:s="http://esb.training.com/esb_adapter">
+    </cxf:cxfEndpoint>
+    <bean class="sample.camel.CamelProcessor" id="processor"/>
+    <camelContext id="SampleCamel" xmlns="http://camel.apache.org/schema/spring">
+        <route id="hello">
+            <from id="_from1" uri="cxf:bean:processAddress"/>
+            <process id="_process1" ref="processor"/>
+        </route>
+    </camelContext>
+</beans>
