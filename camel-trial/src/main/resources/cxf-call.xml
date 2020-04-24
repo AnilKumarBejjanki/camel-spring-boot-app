@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:cxf="http://camel.apache.org/schema/cxf"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans     http://www.springframework.org/schema/beans/spring-beans.xsd     http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd     http://camel.apache.org/schema/spring     http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <cxf:cxfEndpoint address="http://localhost:8090/Address"
+        endpointName="s:AddressPort" id="processAddress"
+        serviceName="s:AddressService"
+        wsdlURL="classpath:wsdl/address.wsdl" xmlns:s="http://esb.training.com/esb_adapter">
+        <cxf:properties>
+            <entry key="dataFormat" value="PAYLOAD"/>
+        </cxf:properties>
+    </cxf:cxfEndpoint>
+    <camelContext id="SampleCamel" xmlns="http://camel.apache.org/schema/spring">
+        <route id="hello">
+            <from id="_from1" uri="cxf:bean:processAddress?synchronous=true"/>
+            <log id="_log1" message="input request body is >>>> ${body}"/>
+            <to id="_to1" uri="xslt:/wsdl/response.xslt?failOnNullBody=false"/>
+            <log id="_log2" message="response is >>>>>>>${body}"/>
+        </route>
+    </camelContext>
+</beans>
