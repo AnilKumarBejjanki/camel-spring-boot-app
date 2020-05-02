@@ -29,10 +29,12 @@
     <camelContext id="camelContext-dde4ffb9-82b7-463d-81de-3834b0b99757" xmlns="http://camel.apache.org/schema/spring">
         <route id="_route1">
             <from id="_from1" uri="timer://timer1?period=10s"/>
-            <log id="_log1" message="select from articles"/>
+            <setHeader headerName="globalVariable" id="globalVariable">
+                <constant>globalVariableValue</constant>
+            </setHeader>
+            <log id="_log3" logName="PRINT Header" message="Headers #############${headers} and Body is ${body}"/>
             <setBody id="_setBody1">
-                <constant>
-                    SELECT * FROM SAMPLE
+                <constant>SELECT * FROM SAMPLE&#xd;
                 </constant>
             </setBody>
             <to id="_to1" uri="jdbc:dataSource"/>
