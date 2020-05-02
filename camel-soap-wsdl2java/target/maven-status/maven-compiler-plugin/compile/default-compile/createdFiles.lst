@@ -1,0 +1,8 @@
+com\training\esb\esb_adapter\AddressEndpoint.class
+com\training\esb\esb_adapter\AddressService.class
+com\training\esb\esb_adapter\package-info.class
+sample\camel\CamelProcessor.class
+com\training\esb\esb_adapter\ObjectFactory.class
+com\training\esb\esb_adapter\GetAddressRequest.class
+sample\camel\SampleCamelApplication.class
+com\training\esb\esb_adapter\GetAddressResponse.class
