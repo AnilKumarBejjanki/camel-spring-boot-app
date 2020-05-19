@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:cxf="http://camel.apache.org/schema/cxf"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans     http://www.springframework.org/schema/beans/spring-beans.xsd     http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd     http://camel.apache.org/schema/spring     http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <cxf:cxfEndpoint address="http://localhost:8090/Address"
+        endpointName="s:AddressPort" id="processAddress"
+        serviceName="s:AddressService"
+        wsdlURL="classpath:wsdl/address.wsdl" xmlns:s="http://esb.training.com/esb_adapter">
+        <cxf:properties>
+            <entry key="dataFormat" value="PAYLOAD"/>
+        </cxf:properties>
+    </cxf:cxfEndpoint>
+    <camelContext id="SampleCamel" streamCache="true" xmlns="http://camel.apache.org/schema/spring">
+        <route id="hello">
+            <from id="_from1" uri="cxf:bean:processAddress?synchronous=true"/>
+            <log id="_log1" message="input request body is >>>> ${body}"/>
+            <doTry id="_doTry1">
+                <to id="_to2" uri="validator:/wsdl/address.xsd"/>
+                <log id="_log3" message=">>>> validate with xsd ${body}"/>
+                <doCatch id="_doCatch1">
+                    <exception>org.apache.camel.ValidationException</exception>
+                    <log id="logcatch" message=">>>catch block ${body}"/>
+                    <to id="_to3" uri="xslt:/wsdl/error.xslt"/>
+                </doCatch>
+            </doTry>
+            <choice id="_choice1">
+                <when id="_when1">
+                    <xpath>//addressId='One'</xpath>
+                    <to id="_to1" uri="xslt:/wsdl/address_one.xslt?failOnNullBody=false"/>
+                    <log id="_log2" message="response one is>>>>>>>${body}"/>
+                </when>
+                <when id="_when2">
+                    <xpath>//addressId='Two'</xpath>
+                    <to id="_to4" uri="xslt:/wsdl/address_two.xslt?failOnNullBody=false"/>
+                    <log id="_log4" message="response Two is>>>>>>>${body}"/>
+                </when>
+                <otherwise id="_otherwise1">
+                    <to id="_to5" uri="xslt:/wsdl/response.xslt?failOnNullBody=false"/>
+                    <log id="_log5" message="response Other is>>>>>>>${body}"/>
+                </otherwise>
+            </choice>
+        </route>
+    </camelContext>
+</beans>
