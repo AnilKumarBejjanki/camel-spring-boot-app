@@ -18,7 +18,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		<camel.version>2.25.1</camel.version>
-		<sqlconnector.version>8.0.13</sqlconnector.version>
+		<sqlconnector.version>8.0.16</sqlconnector.version>
 	</properties>
 
 	<dependencies>
